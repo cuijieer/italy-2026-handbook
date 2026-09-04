@@ -82,7 +82,7 @@
     }
     .control.button { cursor: pointer; font-weight: 700; }
 
-    main { overflow: hidden; }
+    main { overflow-x: hidden; overflow-x: clip; }
     .focus-band { padding: 34px 0 28px; border-bottom: 1px solid var(--line); }
     .focus-layout {
       display: grid;
@@ -190,8 +190,9 @@
     .route-stop strong { display: block; }
     .route-stop span { color: var(--muted); font-size: 12px; }
 
-    .days { display: grid; gap: 10px; }
+    .days { display: grid; min-width: 0; gap: 10px; }
     .day {
+      min-width: 0;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--paper-strong);
@@ -217,7 +218,7 @@
     .day-title span { display: block; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
     .chevron { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; transition: transform 180ms ease; }
     .day[open] .chevron { transform: rotate(45deg); }
-    .day-body { padding: 0 18px 22px 128px; }
+    .day-body { min-width: 0; padding: 0 18px 22px 128px; }
     .timeline { position: relative; margin: 0 0 22px; padding: 3px 0 0; list-style: none; }
     .timeline::before { content: ""; position: absolute; left: 61px; top: 10px; bottom: 10px; width: 1px; background: var(--line); }
     .timeline li { position: relative; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 28px; padding: 8px 0; }
@@ -229,12 +230,27 @@
     .map-link { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--blue) 55%, transparent); text-underline-offset: 3px; }
     .deadline { color: var(--red); font-weight: 800; }
     .day-map {
+      width: 100%;
+      max-width: 100%;
       overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--red) var(--line);
+      -webkit-overflow-scrolling: touch;
       margin: 0 0 18px;
       padding: 14px 2px 10px;
       border-top: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
     }
+    .day-map::-webkit-scrollbar,
+    .route-legend::-webkit-scrollbar,
+    .booking-nav::-webkit-scrollbar { height: 5px; }
+    .day-map::-webkit-scrollbar-track,
+    .route-legend::-webkit-scrollbar-track,
+    .booking-nav::-webkit-scrollbar-track { background: var(--line); }
+    .day-map::-webkit-scrollbar-thumb,
+    .route-legend::-webkit-scrollbar-thumb,
+    .booking-nav::-webkit-scrollbar-thumb { background: var(--red); border-radius: 99px; }
     .mini-route { display: flex; min-width: max-content; padding: 0 14px; }
     .mini-stop {
       position: relative;
@@ -285,8 +301,20 @@
     }
     .action-link.primary { border-color: var(--green); color: var(--green); }
 
-    .booking-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .booking-nav {
+      display: flex;
+      max-width: 100%;
+      gap: 8px;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--red) var(--line);
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+    }
     .filter-btn {
+      flex: 0 0 auto;
       padding: 8px 12px;
       border: 1px solid var(--line);
       border-radius: 4px;
@@ -365,15 +393,43 @@
       .clock-panel { grid-template-columns: 1fr; }
       .draft-note { grid-column: auto; }
       .route-board svg { min-height: 220px; }
+      .route-legend {
+        display: flex;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: thin;
+        scrollbar-color: var(--red) var(--line);
+        -webkit-overflow-scrolling: touch;
+      }
+      .route-stop {
+        flex: 0 0 148px;
+        border-right: 1px solid var(--line);
+        border-bottom: 0;
+      }
+      .route-stop:nth-child(2n) { border-right: 1px solid var(--line); }
+      .route-stop:last-child { border-right: 0; }
       .day summary { grid-template-columns: 70px minmax(0, 1fr) 30px; gap: 12px; padding-inline: 14px; }
       .day-date { padding-right: 10px; }
       .day-title strong { font-size: 16px; }
       .day-body { padding: 0 14px 18px; }
+      .day-map {
+        margin-inline: 0;
+        padding-bottom: 12px;
+        scroll-snap-type: inline proximity;
+      }
+      .mini-route { padding-inline: 6px; }
+      .mini-stop { width: 122px; scroll-snap-align: start; }
       .timeline::before { left: 51px; }
       .timeline li { grid-template-columns: 38px minmax(0, 1fr); gap: 26px; }
       .timeline li::before { left: 47px; }
       .todo-item { grid-template-columns: 48px minmax(0, 1fr); }
       .todo-state { grid-column: 2; }
+      .booking-nav {
+        margin-inline: -12px;
+        padding-inline: 12px;
+        scroll-snap-type: inline proximity;
+      }
+      .filter-btn { scroll-snap-align: start; }
       .tips-grid { grid-template-columns: 1fr; }
       .footer-inner { flex-direction: column; }
     }
